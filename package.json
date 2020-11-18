@@ -1,0 +1,26 @@
+{
+  "name": "catchpoint-new-relic-webhook",
+  "version": "1.0.0",
+  "author": "Catchpoint",
+  "description": "Catchpoint & New Relic integration",
+  "repository": {
+    "type": "git",
+    "url": "https://git.catchpoint.net/Integrations/NewRelicWebhook.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "index.js",
+  "dependencies": {
+     "@google-cloud/pubsub": "^2.0.0",
+    "unirest": "0.6.0",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^1.3.2",
+    "child-process-promise": "^2.2.1",
+    "mocha": "^8.0.0",
+    "request": "^2.88.0",
+    "requestretry": "^4.0.0"
+  }
+}
