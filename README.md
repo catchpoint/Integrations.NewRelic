@@ -79,18 +79,30 @@ _Note : The installer starts a terminal window and runs the_ `gcloud init` _comm
 
 1. To Find or register an Insert API key for your New Relic account: Go to `one.newrelic.com`  > `account dropdown` > `Account settings` > `API keys`, and select `Insights API keys`.
 
+#### Updating node modules
+Open Google Cloud SDK Shell and navigate to the directory where the NodeJS scripts were extracted.
+`$ cd <path to extracted directory/Integrations.GoogleCloudMonitoring/Stackdriver-Webhook/> `
+Execute the following chain of commands in the same order. This is done to update all packages to a new major version.
+
+$ npm install -g npm-check-updates
+$ ncu -u
+$ npm update
+$ npm install
+
+_Note: Run `npm fund` if prompted
+
 #### Deploying Google Cloud functions.
 
 Open Google Cloud SDK Shell and navigate to the directory where the NodeJS scripts was extracted.  
 `$ cd <path to extracted directory/NewRelicWebhook/>;`
 
  1. Deploy publish function:  
-   `$ gcloud functions deploy catchpointNewRelicPublish --trigger-http --runtime nodejs10 --timeout=180 --trigger-http --allow-unauthenticated`
+   `$ gcloud functions deploy catchpointNewRelicPublish --trigger-http --runtime nodejs14 --timeout=180 --trigger-http --allow-unauthenticated`
 
     Copy the URL once the deployment is successful. This will be webhook URL which will be added in Catchpoint portal.
     
  1. Deploy Subscribe function:  
-   `$ gcloud functions deploy catchpointNewRelicSubscribe --trigger-topic catchpoint-webhook --timeout=180 --runtime nodejs10 --allow-unauthenticated`
+   `$ gcloud functions deploy catchpointNewRelicSubscribe --trigger-topic catchpoint-webhook --timeout=180 --runtime nodejs14 --allow-unauthenticated`
       
 ####  Set up the Catchpoint Test Data Webhook.
 
