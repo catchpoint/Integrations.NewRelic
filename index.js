@@ -51,12 +51,7 @@ async function postToNewRelic(response) {
 	const nodeName = response.NodeName;
 	const timingMetricsKeys = Object.keys(response.Summary.Timing);
 	const timestamp = timeStampInSeconds(response.Summary.Timestamp);
-	let errorCode;
-	let params = {}
-	if(response.Summary.hasOwnProperty('Error')){
-		errorCode = response.Summary.Error.Code
-		params['errorCode'] = errorCode;
-	}
+
 	/** New Relic Metric API requires data to be sent in the below Json format [{ 
 		"metrics":[{ 
 		   "name":"memory.heap", 
@@ -65,24 +60,14 @@ async function postToNewRelic(response) {
 		   "timestamp":CURRENT_TIME_IN_MILLISECONDS_HERE, 
 		   "attributes":{"host.name":"dev.server.com"} 
 		   }] 
-		}] 
+		}]
 	*/
 	let newRelicJsonString = '[{"metrics":[]}]';
 	let newRelicJsonPayload = JSON.parse(newRelicJsonString);
 	processTestData(testId, nodeName, timestamp, response.Summary.Timing, newRelicJsonPayload[0].metrics);
 
-	if (response.Summary.hasOwnProperty('Error'))
-	processErrorTestData(testId, nodeName, timestamp, response.Summary.Error,  newRelicJsonPayload[0].metrics, params);
-	
-	
-	if (response.Summary.hasOwnProperty('Byte'))
-	processTestData(testId, nodeName, timestamp, response.Summary.Byte.Response,  newRelicJsonPayload[0].metrics);
-
-	if (response.hasOwnProperty('TestDetail'))
-	processTestData(testId, nodeName, timestamp, response.TestDetail, newRelicJsonPayload[0].metrics);
-
 	if (response.Summary.Timing.hasOwnProperty('ContentType')) {
-	processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
+		processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
 	}
 
 	/** If test type is Traceroute then compute RTT, Packet Loss, #Hops.*/
@@ -138,7 +123,7 @@ function timeStampInSeconds(timestamp) {
 /**
  * Constructs New Relic metric datapoint object with metric names, type, value, timestamp and attributes.
  */
-function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp, params = null) {
+function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp) {
 	let payloadBuilder = {
 		name: metricName,
 		type: 'gauge',
@@ -146,15 +131,11 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
 		timestamp: timeStamp,
 		attributes: {
 			nodeName: nodeName,
-			testId: testId,
+			testId: testId
 		}
 	};
-	if(params!=null && params['errorCode']!=null)
-		payloadBuilder['attributes']['errorCode'] = params['errorCode']
-
 	return payloadBuilder;
 }
-
 
 // [START function_processTestData]
 /**
@@ -166,17 +147,6 @@ function processTestData(testId, nodeName, timestamp, testData, metrics) {
 		let metricValue = testData[metricKeys[i]];
 		let metricIdentifier = 'catchpoint_' + metricKeys[i];
 		let data = parseTimeSeriesData(metricIdentifier, metricValue, testId, nodeName, timestamp);
-		metrics.push(data);
-	}
-}
-
-
-function processErrorTestData(testId, nodeName, timestamp, testData, metrics, params = null) {
-	const metricKeys = Object.keys(testData);
-	for (var i = 0; i < metricKeys.length; i++) {
-		let metricValue = testData[metricKeys[i]];
-		let metricIdentifier = 'catchpoint_error_' + metricKeys[i];
-		let data = parseTimeSeriesData(metricIdentifier, metricValue, testId, nodeName, timestamp, params);
 		metrics.push(data);
 	}
 }
