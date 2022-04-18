@@ -68,21 +68,26 @@ async function postToNewRelic(response) {
 		}] 
 	*/
 	let newRelicJsonString = '[{"metrics":[]}]';
-	let newRelicJsonPayload = JSON.parse(newRelicJsonString);
+	let newRelicJsonPayload = JSON.parse(newRelicJsonString);{
 		processTestData(testId, nodeName, timestamp, response.Summary.Timing, newRelicJsonPayload[0].metrics);
+	}
 
-	if (response.Summary.hasOwnProperty('Error'))
+	if (response.Summary.hasOwnProperty('Error')){
 		processErrorTestData(testId, nodeName, timestamp, response.Summary.Error,  newRelicJsonPayload[0].metrics, params);
+	}
 	
 	
-	if (response.Summary.hasOwnProperty('Byte'))
+	if (response.Summary.hasOwnProperty('Byte')){
 		processTestData(testId, nodeName, timestamp, response.Summary.Byte.Response,  newRelicJsonPayload[0].metrics);
+	}
 
-	if (response.hasOwnProperty('TestDetail'))
+	if (response.hasOwnProperty('TestDetail')){
 		processTestData(testId, nodeName, timestamp, response.TestDetail, newRelicJsonPayload[0].metrics);
+	}
 
-	if (response.Summary.Timing.hasOwnProperty('ContentType')) 
+	if (response.Summary.Timing.hasOwnProperty('ContentType')){
 		processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
+	}
 	
 
 	/** If test type is Traceroute then compute RTT, Packet Loss, #Hops.*/
