@@ -92,7 +92,6 @@ _Note : The installer starts a terminal window and runs the_ `gcloud init` _comm
    $ npm update
    $ npm install
    ```
-
     _Note: Run `npm fund` if prompted_
 
 #### Deploying Google Cloud functions.
@@ -101,12 +100,12 @@ Open Google Cloud SDK Shell and navigate to the directory where the NodeJS scrip
 `$ cd <path to extracted directory/NewRelicWebhook/>;`
 
  1. Deploy publish function:  
-   `$ gcloud functions deploy catchpointNewRelicPublish --trigger-http --runtime nodejs14 --timeout=180 --trigger-http --allow-unauthenticated`
+   `$ gcloud functions deploy catchpointNewRelicPublish --trigger-http --runtime nodejs10 --timeout=180 --trigger-http --allow-unauthenticated`
 
     Copy the URL once the deployment is successful. This will be webhook URL which will be added in Catchpoint portal.
     
  1. Deploy Subscribe function:  
-   `$ gcloud functions deploy catchpointNewRelicSubscribe --trigger-topic catchpoint-webhook --timeout=180 --runtime nodejs14 --allow-unauthenticated`
+   `$ gcloud functions deploy catchpointNewRelicSubscribe --trigger-topic catchpoint-webhook --timeout=180 --runtime nodejs10 --allow-unauthenticated`
       
 ####  Set up the Catchpoint Test Data Webhook.
 

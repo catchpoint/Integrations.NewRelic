@@ -100,6 +100,43 @@ async function postToNewRelic(response) {
         console.log("New Relic Request Id: " + response.requestId);
         console.log("Finished posting data to New Relic...");
     });
+	const testId = response.TestId;
+	const nodeName = response.NodeName;
+	const timingMetricsKeys = Object.keys(response.Summary.Timing);
+	const timestamp = timeStampInSeconds(response.Summary.Timestamp);
+
+	/** New Relic Metric API requires data to be sent in the below Json format [{ 
+		"metrics":[{ 
+		   "name":"memory.heap", 
+		   "type":"gauge", 
+		   "value":2.3, 
+		   "timestamp":CURRENT_TIME_IN_MILLISECONDS_HERE, 
+		   "attributes":{"host.name":"dev.server.com"} 
+		   }] 
+		}]
+	*/
+	let newRelicJsonString = '[{"metrics":[]}]';
+	let newRelicJsonPayload = JSON.parse(newRelicJsonString);
+	processTestData(testId, nodeName, timestamp, response.Summary.Timing, newRelicJsonPayload[0].metrics);
+
+	if (response.Summary.Timing.hasOwnProperty('ContentType')) {
+		processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
+	}
+
+	/** If test type is Traceroute then compute RTT, Packet Loss, #Hops.*/
+	if (response.TestDetail.TypeId === TRACEROUTE_TEST_ID) {
+		processTracertTestData(testId, nodeName, timestamp, response.Diagnostic.TraceRoute, newRelicJsonPayload[0].metrics);
+	}
+
+	/** If test type is Ping then compute RTT, Packet Loss */
+	else if (response.TestDetail.TypeId === PING_TEST_ID) {
+		processTestData(testId, nodeName, timestamp, response.Summary.Ping, newRelicJsonPayload[0].metrics);
+	}
+
+	newRelicApi.postDataToNewRelic(newRelicJsonPayload, function (response) {
+		console.log("New Relic Request Id: " + response.requestId);
+		console.log("Finished posting data to New Relic...");
+	});
 }
 
 // [START function_timeStampInSeconds]
@@ -154,8 +191,20 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
         payloadBuilder['attributes']['errorCode'] = params['errorCode']
 
     return payloadBuilder;
-}
 
+function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp) {
+	let payloadBuilder = {
+		name: metricName,
+		type: 'gauge',
+		value: metricValue,
+		timestamp: timeStamp,
+		attributes: {
+			nodeName: nodeName,
+			testId: testId
+		}
+	};
+	return payloadBuilder;
+}
 
 // [START function_processTestData]
 /**
@@ -181,7 +230,8 @@ function processErrorTestData(testId, nodeName, timestamp, testData, metrics, pa
     }
 }
 
-// [START function_processTracerouteTestData]
+// [START function_processTracertTestData]
+
 /**
  * Compute RTT, Packet Loss, #Hops for Trace Route test and add to New Relic object.
  */
