@@ -139,7 +139,6 @@ async function postToNewRelic(response) {
 	});
 }
 
-// [START function_timeStampInSeconds]
 /**
  * Converts timestamp string to a supported format and returns time in milliseconds.
  * For example, If timestamp string is '20201030120547624', converts to '2020-10-30T12:05:47Z' 
@@ -172,7 +171,6 @@ function timeStampInSeconds(timestamp) {
     return seconds;
 }
 
-// [START function_parseTimeSeriesData]
 /**
  * Constructs New Relic metric data point object with metric names, type, value, timestamp and attributes.
  */
@@ -206,7 +204,6 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
 	return payloadBuilder;
 }
 
-// [START function_processTestData]
 /**
  * Create/Map key:value pairs for all the metrics and add to New Relic object.
  */
@@ -220,6 +217,9 @@ function processTestData(testId, nodeName, timestamp, testData, metrics) {
     }
 }
 
+/**
+ * Create/Map key:value pairs for all the metrics with error type and add to New Relic object.
+ */
 function processErrorTestData(testId, nodeName, timestamp, testData, metrics, params = null) {
     const metricKeys = Object.keys(testData);
     for (var i = 0; i < metricKeys.length; i++) {
@@ -229,8 +229,6 @@ function processErrorTestData(testId, nodeName, timestamp, testData, metrics, pa
         metrics.push(data);
     }
 }
-
-// [START function_processTracertTestData]
 
 /**
  * Compute RTT, Packet Loss, #Hops for Trace Route test and add to New Relic object.
