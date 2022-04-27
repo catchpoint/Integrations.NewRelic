@@ -68,7 +68,7 @@ _Note : The installer starts a terminal window and runs the_ `gcloud init` _comm
 1. Install and initialize the Cloud SDK.
 
 1. Update gcloud components:  
-`$ $ gcloud components update`
+`$ gcloud components update`
 
 #### Set up the Google Cloud Monitoring Repository locally
 
