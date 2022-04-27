@@ -171,7 +171,7 @@ function timeStampInSeconds(timestamp) {
 }
 
 /**
- * Constructs New Relic metric data point object with metric names, type, value, timestamp and attributes along with error code.
+ * Constructs New Relic metric data point object with metric names, type, value, timestamp, error cod and attributes.
  */
 function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp, params = null) {
     let payloadBuilder = {
