@@ -41,7 +41,6 @@ exports.catchpointNewRelicSubscribe = async (message) => {
     await postToNewRelic(catchpointData);
 };
 
-// [START function_postToNewRelic]
 /**
  * Handles parsing Catchpoint webhook data,
  * constructs time series object and writes time series object to New Relic Metrics API. 
@@ -71,7 +70,7 @@ async function postToNewRelic(response) {
     processTestData(testId, nodeName, timestamp, response.Summary.Timing, newRelicJsonPayload[0].metrics);
 
     if (response.Summary.hasOwnProperty('Error')) {
-        processErrorTestData(testId, nodeName, timestamp, response.Summary.Error, newRelicJsonPayload[0].metrics, params);
+    	processErrorTestData(testId, nodeName, timestamp, response.Summary.Error, newRelicJsonPayload[0].metrics, params);
     }
 
     if (response.Summary.hasOwnProperty('Byte')) {
@@ -120,22 +119,22 @@ async function postToNewRelic(response) {
 	processTestData(testId, nodeName, timestamp, response.Summary.Timing, newRelicJsonPayload[0].metrics);
 
 	if (response.Summary.Timing.hasOwnProperty('ContentType')) {
-		processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
+	    processTestData(testId, nodeName, timestamp, response.Summary.Timing.ContentType, newRelicJsonPayload[0].metrics);
 	}
 
 	/** If test type is Traceroute then compute RTT, Packet Loss, #Hops.*/
 	if (response.TestDetail.TypeId === TRACEROUTE_TEST_ID) {
-		processTracertTestData(testId, nodeName, timestamp, response.Diagnostic.TraceRoute, newRelicJsonPayload[0].metrics);
+	    processTracertTestData(testId, nodeName, timestamp, response.Diagnostic.TraceRoute, newRelicJsonPayload[0].metrics);
 	}
 
 	/** If test type is Ping then compute RTT, Packet Loss */
 	else if (response.TestDetail.TypeId === PING_TEST_ID) {
-		processTestData(testId, nodeName, timestamp, response.Summary.Ping, newRelicJsonPayload[0].metrics);
+	    processTestData(testId, nodeName, timestamp, response.Summary.Ping, newRelicJsonPayload[0].metrics);
 	}
 
 	newRelicApi.postDataToNewRelic(newRelicJsonPayload, function (response) {
-		console.log("New Relic Request Id: " + response.requestId);
-		console.log("Finished posting data to New Relic...");
+	    console.log("New Relic Request Id: " + response.requestId);
+	    console.log("Finished posting data to New Relic...");
 	});
 }
 
@@ -172,7 +171,7 @@ function timeStampInSeconds(timestamp) {
 }
 
 /**
- * Constructs New Relic metric data point object with metric names, type, value, timestamp and attributes.
+ * Constructs New Relic metric data point object with metric names, type, value, timestamp and attributes along with error code.
  */
 function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp, params = null) {
     let payloadBuilder = {
@@ -190,6 +189,9 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
 
     return payloadBuilder;
 
+/**
+ * Constructs New Relic metric data point object with metric names, type, value, timestamp and attributes.
+ */
 function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp) {
 	let payloadBuilder = {
 		name: metricName,
