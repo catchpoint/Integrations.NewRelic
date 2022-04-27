@@ -171,7 +171,7 @@ function timeStampInSeconds(timestamp) {
 }
 
 /**
- * Constructs New Relic metric data point object with metric names, type, value, timestamp, error cod and attributes.
+ * Constructs New Relic metric data point object with metric names, type, value, timestamp, error code and attributes.
  */
 function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStamp, params = null) {
     let payloadBuilder = {
@@ -184,9 +184,9 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
             testId: testId,
         }
     };
-    if (params != null && params['errorCode'] != null)
+    if (params != null && params['errorCode'] != null){
         payloadBuilder['attributes']['errorCode'] = params['errorCode']
-
+    }
     return payloadBuilder;
 
 /**
@@ -241,7 +241,6 @@ function processTracerouteTestData(testId, nodeName, timestamp, testData, metric
     let packetLossCounter = 0;
     let pingCounter = 0;
     let numberOfHops = testData.Hops.length;
-
     for (var i = 0; i < 3; i++) {
         if (testData.Hops[numberOfHops - 1].RoundTripTimes[i] != null) {
             sumPingTime += testData.Hops[numberOfHops - 1].RoundTripTimes[i];
