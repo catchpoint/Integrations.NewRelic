@@ -184,8 +184,8 @@ function parseTimeSeriesData(metricName, metricValue, testId, nodeName, timeStam
             testId: testId,
         }
     };
-    if (params != null && params['errorCode'] != null){
-        payloadBuilder['attributes']['errorCode'] = params['errorCode']
+    if (params != null && params['errorCode'] != null) {
+        payloadBuilder['attributes']['errorCode'] = params['errorCode'];
     }
     return payloadBuilder;
 
