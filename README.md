@@ -68,7 +68,7 @@ _Note : The installer starts a terminal window and runs the_ `gcloud init` _comm
 1. Install and initialize the Cloud SDK.
 
 1. Update gcloud components:  
-`$ $ gcloud components update`
+`$ gcloud components update`
 
 #### Set up the Google Cloud Monitoring Repository locally
 
@@ -78,6 +78,21 @@ _Note : The installer starts a terminal window and runs the_ `gcloud init` _comm
 1. In the `.env` file from NewRelic-Webhook directory, update `newRelicApiKey`.
 
 1. To Find or register an Insert API key for your New Relic account: Go to `one.newrelic.com`  > `account dropdown` > `Account settings` > `API keys`, and select `Insights API keys`.
+
+#### Updating node modules
+
+1. Open Google Cloud SDK Shell and navigate to the directory where the NodeJS scripts were extracted.
+`$ cd <path to extracted directory/Integrations.GoogleCloudMonitoring/Stackdriver-Webhook/> `
+
+1. Execute the following chain of commands in the same order. This is done to update all packages to a new major version.
+
+   ```
+   $ npm install -g npm-check-updates
+   $ ncu -u
+   $ npm update
+   $ npm install
+   ```
+    _Note: Run `npm fund` if prompted_
 
 #### Deploying Google Cloud functions.
 
